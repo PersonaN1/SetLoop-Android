@@ -11,4 +11,36 @@
     <string name="default_name_simple_interval">Simple interval</string>
     <string name="default_name_your_example">Your example</string>
     <string name="default_name_new_timer">New Timer</string>
+
+    <string name="preset_prepare">Get ready</string>
+    <string name="preset_work">Work</string>
+    <string name="preset_rest">Rest</string>
+    <string name="preset_rest_between_sets">Rest between sets</string>
+    <string name="preset_tabata">Tabata</string>
+    <string name="preset_simple_interval">Simple interval</string>
+    <string name="preset_two_blocks">Two blocks</string>
+
+    <string name="workout_channel_name">Workout</string>
+    <string name="workout_channel_description">Countdown of the running workout</string>
+    <string name="workout_notification_subtitle">SetLoop - %1$s</string>
+    <string name="workout_cycle">Cycle %1$d/%2$d</string>
+    <string name="workout_set">Set %1$d/%2$d</string>
+    <string name="workout_next">Next: %1$s %2$s</string>
+    <string name="workout_paused">Paused</string>
+
+    <string name="action_pause">Pause</string>
+    <string name="action_resume">Resume</string>
+    <string name="action_skip">Skip</string>
+    <string name="action_back">Back</string>
+    <string name="action_finish">Finish</string>
+    <string name="action_start">Start</string>
+    <string name="action_close">Close</string>
+
+    <string name="prototype_title">Workout prototype</string>
+    <string name="result_complete">Workout complete</string>
+    <string name="result_partial">Workout finished early</string>
+    <string name="result_duration">Active time: %1$s</string>
+    <string name="result_steps">Steps completed: %1$d of %2$d</string>
+    <string name="result_work_time">Work: %1$s</string>
+    <string name="result_rest_time">Rest: %1$s</string>
 </resources>
