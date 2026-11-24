@@ -1,0 +1,11 @@
+<resources>
+    <string name="default_name_prepare">Подготовка</string>
+    <string name="default_name_work">Работа</string>
+    <string name="default_name_rest">Отдых</string>
+    <string name="default_name_rest_between_sets">Отдых между сетами</string>
+    <string name="default_name_cooldown">Заминка</string>
+    <string name="default_name_tabata">Табата 20/10</string>
+    <string name="default_name_simple_interval">Простой интервал</string>
+    <string name="default_name_your_example">Ваш пример</string>
+    <string name="default_name_new_timer">Новый таймер</string>
+</resources>
