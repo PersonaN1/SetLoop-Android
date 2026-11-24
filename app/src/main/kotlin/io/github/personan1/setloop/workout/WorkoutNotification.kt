@@ -49,7 +49,7 @@ class WorkoutNotification(private val context: Context) {
             .setSmallIcon(R.drawable.ic_stat_workout)
             .setContentTitle(title)
             .setContentText(details.firstOrNull())
-            .setSubText(context.getString(R.string.workout_notification_subtitle, state.timerName.cappedName))
+            .setSubText(state.timerName.cappedName)
             .setStyle(Notification.BigTextStyle().bigText(details.joinToString("\n")))
             .setColor(state.color.argb.toInt())
             .setColorized(true)

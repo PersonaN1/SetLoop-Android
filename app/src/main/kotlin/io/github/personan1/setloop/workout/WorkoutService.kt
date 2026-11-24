@@ -80,7 +80,7 @@ class WorkoutService : Service() {
             audio = WorkoutAudio(this@WorkoutService, options, scope) {
                 if (options.pauseOnInterruption) controller.pause()
             }
-            haptics = WorkoutHaptics(this@WorkoutService, options.vibration)
+            haptics = WorkoutHaptics(this@WorkoutService, options.vibration, options.ignoreSilentMode)
         }
 
         override fun onSignal(signal: WorkoutSignal) {
