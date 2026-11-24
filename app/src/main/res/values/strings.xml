@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">SetLoop</string>
+
+    <!-- Default names of example timers and steps. Keep in sync with DefaultNames. -->
+    <string name="default_name_prepare">Prepare</string>
+    <string name="default_name_work">Work</string>
+    <string name="default_name_rest">Rest</string>
+    <string name="default_name_rest_between_sets">Rest between sets</string>
+    <string name="default_name_cooldown">Cooldown</string>
+    <string name="default_name_tabata">Tabata 20/10</string>
+    <string name="default_name_simple_interval">Simple interval</string>
+    <string name="default_name_your_example">Your example</string>
+    <string name="default_name_new_timer">New Timer</string>
 </resources>
