@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -22,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.core.content.ContextCompat
 import io.github.personan1.setloop.core.Presets
+import io.github.personan1.setloop.data.DefaultNames
 import io.github.personan1.setloop.workout.WorkoutController
 import io.github.personan1.setloop.workout.WorkoutOptions
 import io.github.personan1.setloop.workout.WorkoutService
@@ -60,17 +62,7 @@ private fun PrototypeApp() {
 @Composable
 private fun PresetListScreen() {
     val context = LocalContext.current
-    val presets = Presets.all(
-        Presets.Names(
-            prepare = stringResource(R.string.preset_prepare),
-            work = stringResource(R.string.preset_work),
-            rest = stringResource(R.string.preset_rest),
-            restBetweenSets = stringResource(R.string.preset_rest_between_sets),
-            tabata = stringResource(R.string.preset_tabata),
-            simpleInterval = stringResource(R.string.preset_simple_interval),
-            twoBlocks = stringResource(R.string.preset_two_blocks),
-        ),
-    )
+    val presets = remember(context) { Presets.all(DefaultNames.presetNames(context)) }
     var askedForNotifications by rememberSaveable { mutableStateOf(false) }
     var pending by rememberSaveable { mutableStateOf<Int?>(null) }
 

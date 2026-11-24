@@ -12,14 +12,6 @@
     <string name="default_name_your_example">Your example</string>
     <string name="default_name_new_timer">New Timer</string>
 
-    <string name="preset_prepare">Get ready</string>
-    <string name="preset_work">Work</string>
-    <string name="preset_rest">Rest</string>
-    <string name="preset_rest_between_sets">Rest between sets</string>
-    <string name="preset_tabata">Tabata</string>
-    <string name="preset_simple_interval">Simple interval</string>
-    <string name="preset_two_blocks">Two blocks</string>
-
     <string name="workout_channel_name">Workout</string>
     <string name="workout_channel_description">Countdown of the running workout</string>
     <string name="workout_notification_subtitle">SetLoop - %1$s</string>
