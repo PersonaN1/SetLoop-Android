@@ -5,7 +5,11 @@ plugins {
 
 android {
     namespace = "io.github.personan1.setloop"
-    compileSdk = 37
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 1
+        }
+    }
 
     defaultConfig {
         applicationId = "io.github.personan1.setloop"
