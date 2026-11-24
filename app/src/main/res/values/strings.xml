@@ -14,7 +14,6 @@
 
     <string name="workout_channel_name">Workout</string>
     <string name="workout_channel_description">Countdown of the running workout</string>
-    <string name="workout_notification_subtitle">SetLoop - %1$s</string>
     <string name="workout_cycle">Cycle %1$d/%2$d</string>
     <string name="workout_set">Set %1$d/%2$d</string>
     <string name="workout_next">Next: %1$s %2$s</string>
