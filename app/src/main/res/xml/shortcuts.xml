@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="pause"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_pause"
+        android:shortcutShortLabel="@string/shortcut_pause_short"
+        android:shortcutLongLabel="@string/shortcut_pause_long">
+        <intent
+            android:action="io.github.personan1.setloop.action.PAUSE"
+            android:targetPackage="io.github.personan1.setloop"
+            android:targetClass="io.github.personan1.setloop.shortcuts.WorkoutCommandActivity" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="resume"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_play"
+        android:shortcutShortLabel="@string/shortcut_resume_short"
+        android:shortcutLongLabel="@string/shortcut_resume_long">
+        <intent
+            android:action="io.github.personan1.setloop.action.RESUME"
+            android:targetPackage="io.github.personan1.setloop"
+            android:targetClass="io.github.personan1.setloop.shortcuts.WorkoutCommandActivity" />
+    </shortcut>
+</shortcuts>

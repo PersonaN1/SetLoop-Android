@@ -13,4 +13,14 @@
     <string name="tip_history_title">Сохраните в историю</string>
     <string name="tip_history_text">Сохранённая тренировка появится во вкладке «История» — со временем, шагами и заметкой.</string>
     <string name="settings_show_tips_again">Показать подсказки снова</string>
+
+    <string name="shortcut_start_named">Запустить %1$s</string>
+    <string name="shortcut_pause_short">Пауза</string>
+    <string name="shortcut_pause_long">Пауза тренировки</string>
+    <string name="shortcut_resume_short">Продолжить</string>
+    <string name="shortcut_resume_long">Продолжить тренировку</string>
+    <string name="shortcut_error_timer_missing">Этого таймера больше нет.</string>
+    <string name="shortcut_error_workout_running">Тренировка уже идёт.</string>
+    <string name="shortcut_error_nothing_to_pause">Сейчас нет идущей тренировки.</string>
+    <string name="shortcut_error_nothing_to_resume">Нет тренировки на паузе.</string>
 </resources>
