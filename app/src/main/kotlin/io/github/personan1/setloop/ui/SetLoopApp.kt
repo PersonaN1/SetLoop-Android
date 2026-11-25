@@ -1,6 +1,7 @@
 package io.github.personan1.setloop.ui
 
 import android.graphics.Color as AndroidColor
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.LocalActivity
@@ -12,20 +13,25 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.semantics
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.personan1.setloop.R
 import io.github.personan1.setloop.data.AppContainer
+import io.github.personan1.setloop.shortcuts.ShortcutAction
 import io.github.personan1.setloop.ui.navigation.SetLoopNavHost
 import io.github.personan1.setloop.ui.summary.SummaryScreen
 import io.github.personan1.setloop.ui.theme.ProvideAppSettings
 import io.github.personan1.setloop.ui.theme.SetLoopTheme
 import io.github.personan1.setloop.ui.theme.isDarkTheme
 import io.github.personan1.setloop.ui.workout.WorkoutScreen
+import io.github.personan1.setloop.ui.workout.rememberWorkoutStarter
 import io.github.personan1.setloop.workout.WorkoutController
 import io.github.personan1.setloop.workout.WorkoutUiState
 
@@ -37,7 +43,7 @@ val LocalAppContainer = staticCompositionLocalOf<AppContainer> { error("LocalApp
  * `WorkoutController.state` is Active (workout screen) or Finished (summary screen).
  */
 @Composable
-fun SetLoopApp(container: AppContainer) {
+fun SetLoopApp(container: AppContainer, shortcut: ShortcutAction? = null, onShortcutHandled: () -> Unit = {}) {
     val settings by container.settings.values.collectAsStateWithLifecycle(initialValue = null)
     val loaded = settings ?: return
     val workout by WorkoutController.instance.state.collectAsStateWithLifecycle()
@@ -47,6 +53,7 @@ fun SetLoopApp(container: AppContainer) {
         ProvideAppSettings(loaded) {
             SetLoopTheme(loaded.theme) {
                 val workoutShown = workout !is WorkoutUiState.Idle
+                ShortcutRequests(shortcut, onShortcutHandled)
                 SystemBars(lightIcons = isDarkTheme(loaded.theme) || workout is WorkoutUiState.Active)
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     Box(modifier = Modifier.fillMaxSize()) {
@@ -72,6 +79,29 @@ fun SetLoopApp(container: AppContainer) {
                 }
             }
         }
+    }
+}
+
+/**
+ * Acts on a launcher shortcut that opened the app (Pause and Resume never get here, see
+ * `WorkoutCommandActivity`). Starting goes through the same flow as the Start button, so the notification
+ * permission and the background restriction warning apply.
+ */
+@Composable
+private fun ShortcutRequests(shortcut: ShortcutAction?, onHandled: () -> Unit) {
+    val context = LocalContext.current
+    val container = LocalAppContainer.current
+    val starter = rememberWorkoutStarter()
+    LaunchedEffect(shortcut) {
+        val request = shortcut as? ShortcutAction.StartTimer ?: return@LaunchedEffect
+        when {
+            WorkoutController.instance.state.value !is WorkoutUiState.Idle ->
+                Toast.makeText(context, R.string.shortcut_error_workout_running, Toast.LENGTH_SHORT).show()
+            container.timers.get(request.timerId) == null ->
+                Toast.makeText(context, R.string.shortcut_error_timer_missing, Toast.LENGTH_SHORT).show()
+            else -> starter.start(request.timerId)
+        }
+        onHandled()
     }
 }
 
