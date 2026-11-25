@@ -3,7 +3,6 @@ package io.github.personan1.setloop.workout
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
-import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioTrack
 import android.os.Build
@@ -200,20 +199,7 @@ class WorkoutAudio(
         if (!options.soundsEnabled) return emptyMap()
         return SoundCue.entries.associateWith { cue ->
             val samples = SoundSynth.samples(cue, options.soundSet)
-            val pcm = ShortArray(samples.size) { (samples[it] * Short.MAX_VALUE).toInt().toShort() }
-            val track = AudioTrack.Builder()
-                .setAudioAttributes(soundAttributes)
-                .setAudioFormat(
-                    AudioFormat.Builder()
-                        .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                        .setSampleRate(SoundSynth.SAMPLE_RATE.toInt())
-                        .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
-                        .build(),
-                )
-                .setBufferSizeInBytes(pcm.size * Short.SIZE_BYTES)
-                .setTransferMode(AudioTrack.MODE_STATIC)
-                .build()
-            track.write(pcm, 0, pcm.size)
+            val track = staticPcmTrack(samples, soundAttributes)
             Sound(track, (samples.size / SoundSynth.SAMPLE_RATE * 1000).toLong().milliseconds)
         }
     }
