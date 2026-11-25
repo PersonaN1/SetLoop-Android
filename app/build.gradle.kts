@@ -6,6 +6,16 @@ plugins {
     alias(libs.plugins.androidx.room)
 }
 
+// Release signing comes from Gradle properties (~/.gradle/gradle.properties) or env vars of the same names.
+fun releaseSigningProperty(name: String): String? =
+    providers.gradleProperty(name).orElse(providers.environmentVariable(name)).orNull
+
+val releaseKeystoreFile = releaseSigningProperty("SETLOOP_KEYSTORE_FILE")
+
+if (releaseKeystoreFile == null) {
+    logger.warn("SETLOOP_KEYSTORE_FILE is not set: the release build will be UNSIGNED. See docs/RELEASE.md.")
+}
+
 android {
     namespace = "io.github.personan1.setloop"
     compileSdk {
@@ -19,13 +29,32 @@ android {
         minSdk = 26
         targetSdk = 37
         versionCode = 1
-        versionName = "0.1.0"
+        versionName = "1.1"
+    }
+
+    signingConfigs {
+        if (releaseKeystoreFile != null) {
+            create("release") {
+                storeFile = file(releaseKeystoreFile)
+                storePassword = releaseSigningProperty("SETLOOP_KEYSTORE_PASSWORD")
+                keyAlias = releaseSigningProperty("SETLOOP_KEY_ALIAS")
+                keyPassword = releaseSigningProperty("SETLOOP_KEY_PASSWORD")
+            }
+        }
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.findByName("release")
         }
+    }
+
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
     }
 
     compileOptions {
