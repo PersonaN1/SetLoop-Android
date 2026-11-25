@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="record_status_complete">Выполнено</string>
+    <string name="record_status_partial">Частично</string>
+    <string name="record_metric_steps">Шаги</string>
+    <string name="record_steps_value">%1$d/%2$d</string>
+    <string name="record_steps_spoken">%1$d из %2$d</string>
+    <string name="record_name_label">Название</string>
+
+    <string name="summary_note_label">Заметка (необязательно)</string>
+    <string name="summary_save">Сохранить</string>
+    <string name="summary_dont_save">Не сохранять</string>
+    <string name="summary_history_full">История заполнена (%1$d). При сохранении удалится самая старая тренировка.</string>
+    <string name="summary_discard_title">Не сохранять тренировку?</string>
+    <string name="summary_discard_message">Изменения названия и заметки пропадут.</string>
+    <string name="summary_discard_confirm">Не сохранять</string>
+
+    <string name="history_this_week">На этой неделе</string>
+    <string name="history_metric_workouts">Тренировки</string>
+    <string name="history_metric_time">Время</string>
+    <string name="history_empty_title">Тренировок пока нет</string>
+    <string name="history_empty_message">Здесь появятся сохранённые тренировки.</string>
+    <string name="history_select">Выбрать</string>
+    <string name="history_partial">Частично</string>
+    <string name="history_delete_confirm">Удалить</string>
+    <plurals name="history_delete_title">
+        <item quantity="one">Удалить %1$d тренировку?</item>
+        <item quantity="few">Удалить %1$d тренировки?</item>
+        <item quantity="many">Удалить %1$d тренировок?</item>
+        <item quantity="other">Удалить %1$d тренировок?</item>
+    </plurals>
+    <string name="history_total_hours_minutes">%1$d ч %2$d мин</string>
+    <string name="history_total_hours">%1$d ч</string>
+    <string name="history_total_minutes">%1$d мин</string>
+    <string name="history_total_seconds" tools:ignore="PluralsCandidate">%1$d с</string>
+
+    <string name="detail_note_label">Заметка</string>
+    <string name="detail_steps_header">Шаги</string>
+    <string name="detail_repeat">Повторить</string>
+    <string name="detail_delete">Удалить тренировку</string>
+    <string name="detail_delete_title">Удалить эту тренировку?</string>
+    <string name="detail_delete_confirm">Удалить</string>
+    <string name="detail_outcome_completed">Выполнено</string>
+    <string name="detail_outcome_skipped">Пропущено</string>
+    <string name="detail_outcome_interrupted">Прервано</string>
+    <string name="detail_step_spoken_partial">%1$s из %2$s</string>
+
+    <string name="settings_group_workout">Тренировка</string>
+    <string name="settings_pause_on_calls">Пауза при звонке</string>
+    <string name="settings_show_on_lock_screen">Показывать на экране блокировки</string>
+    <string name="settings_keep_screen_on">Не гасить экран</string>
+    <string name="settings_group_sound">Звук и вибрация</string>
+    <string name="settings_sounds">Звуки</string>
+    <string name="settings_sound_off">Выкл</string>
+    <string name="settings_sound_glass">Стекло</string>
+    <string name="settings_sound_marimba">Маримба</string>
+    <string name="settings_sound_note">Нота</string>
+    <string name="settings_voice_prompts">Голосовые подсказки</string>
+    <string name="settings_vibration">Вибрация</string>
+    <string name="settings_ignore_silent_mode">Игнорировать беззвучный режим</string>
+    <string name="settings_note_silent_mode">Когда выключено, сигналы подчиняются беззвучному режиму и режиму «Не беспокоить», поэтому их может быть не слышно.</string>
+    <string name="settings_note_all_sounds_off">Без звуков и голоса шаги меняются беззвучно: о них сообщают только вибрация и экран.</string>
+    <string name="settings_group_appearance">Оформление</string>
+    <string name="settings_theme">Тема</string>
+    <string name="settings_theme_system">Системная</string>
+    <string name="settings_theme_light">Светлая</string>
+    <string name="settings_theme_dark">Тёмная</string>
+    <string name="settings_group_about">О приложении</string>
+    <string name="settings_privacy">Конфиденциальность</string>
+    <string name="settings_support">Поддержка</string>
+    <string name="settings_telegram">Написать в Telegram</string>
+    <string name="settings_licenses">Лицензии открытого ПО</string>
+    <string name="settings_licenses_title">Шрифт Nunito</string>
+    <string name="settings_version">Версия</string>
+    <string name="settings_version_value">%1$s (%2$d)</string>
+
+    <string name="step_colors_type_prepare">Подготовка</string>
+    <string name="step_colors_type_work_a">Работа A</string>
+    <string name="step_colors_type_work_b">Работа B</string>
+    <string name="step_colors_type_work_c">Работа C</string>
+    <string name="step_colors_type_rest">Отдых</string>
+    <string name="step_colors_type_cooldown">Заминка</string>
+    <string name="step_colors_footer">Цвет отдыха нельзя использовать для работы, а цвета работы — для отдыха.</string>
+    <string name="step_colors_preview">Предпросмотр</string>
+    <string name="step_colors_reset">Сбросить по умолчанию</string>
+    <string name="step_colors_reset_title">Сбросить цвета шагов?</string>
+    <string name="step_colors_reset_confirm">Сбросить</string>
+    <string name="step_colors_unavailable">%1$s, недоступно</string>
+    <string name="palette_red">Красный</string>
+    <string name="palette_pink">Розовый</string>
+    <string name="palette_purple">Пурпурный</string>
+    <string name="palette_violet">Фиолетовый</string>
+    <string name="palette_indigo">Индиго</string>
+    <string name="palette_blue">Синий</string>
+    <string name="palette_ocean">Морской</string>
+    <string name="palette_teal">Бирюзовый</string>
+    <string name="palette_green">Зелёный</string>
+    <string name="palette_olive">Оливковый</string>
+    <string name="palette_amber">Янтарный</string>
+    <string name="palette_graphite">Графит</string>
+    <string name="palette_custom">Свой</string>
+</resources>

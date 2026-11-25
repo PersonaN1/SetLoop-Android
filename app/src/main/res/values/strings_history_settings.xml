@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Shared by summary, history and record detail -->
+    <string name="record_status_complete">Completed</string>
+    <string name="record_status_partial">Partial</string>
+    <string name="record_metric_steps">Steps</string>
+    <string name="record_steps_value">%1$d/%2$d</string>
+    <string name="record_steps_spoken">%1$d of %2$d</string>
+    <string name="record_name_label">Name</string>
+
+    <!-- Summary -->
+    <string name="summary_note_label">Note (optional)</string>
+    <string name="summary_save">Save</string>
+    <string name="summary_dont_save">Don\'t Save</string>
+    <string name="summary_history_full">History is full (%1$d). Saving removes the oldest workout.</string>
+    <string name="summary_discard_title">Discard this workout?</string>
+    <string name="summary_discard_message">Your changes to the name and note will be lost.</string>
+    <string name="summary_discard_confirm">Discard</string>
+
+    <!-- History -->
+    <string name="history_this_week">This week</string>
+    <string name="history_metric_workouts">Workouts</string>
+    <string name="history_metric_time">Time</string>
+    <string name="history_empty_title">No workouts yet</string>
+    <string name="history_empty_message">Finished workouts you save appear here.</string>
+    <string name="history_select">Select</string>
+    <string name="history_partial">Partial</string>
+    <string name="history_delete_confirm">Delete</string>
+    <plurals name="history_delete_title">
+        <item quantity="one">Delete %1$d workout?</item>
+        <item quantity="other">Delete %1$d workouts?</item>
+    </plurals>
+    <!-- Total time of the week: "1 h 20 min", "45 min", "30 sec" -->
+    <string name="history_total_hours_minutes">%1$d h %2$d min</string>
+    <string name="history_total_hours">%1$d h</string>
+    <string name="history_total_minutes">%1$d min</string>
+    <string name="history_total_seconds" tools:ignore="PluralsCandidate">%1$d sec</string>
+
+    <!-- Record detail -->
+    <string name="detail_note_label">Note</string>
+    <string name="detail_steps_header">Steps</string>
+    <string name="detail_repeat">Repeat</string>
+    <string name="detail_delete">Delete Workout</string>
+    <string name="detail_delete_title">Delete this workout?</string>
+    <string name="detail_delete_confirm">Delete</string>
+    <string name="detail_outcome_completed">Completed</string>
+    <string name="detail_outcome_skipped">Skipped</string>
+    <string name="detail_outcome_interrupted">Interrupted</string>
+    <string name="detail_step_spoken_partial">%1$s of %2$s</string>
+
+    <!-- Settings -->
+    <string name="settings_group_workout">Workout</string>
+    <string name="settings_pause_on_calls">Pause on Calls</string>
+    <string name="settings_show_on_lock_screen">Show on Lock Screen</string>
+    <string name="settings_keep_screen_on">Keep Screen On</string>
+    <string name="settings_group_sound">Sound and Vibration</string>
+    <string name="settings_sounds">Sounds</string>
+    <string name="settings_sound_off">Off</string>
+    <string name="settings_sound_glass">Glass</string>
+    <string name="settings_sound_marimba">Marimba</string>
+    <string name="settings_sound_note">Note</string>
+    <string name="settings_voice_prompts">Voice Prompts</string>
+    <string name="settings_vibration">Vibration</string>
+    <string name="settings_ignore_silent_mode">Ignore Silent Mode</string>
+    <string name="settings_note_silent_mode">With this off, signals follow silent mode and Do Not Disturb, so they may not be heard.</string>
+    <string name="settings_note_all_sounds_off">Without sounds or voice, steps change silently: only vibration and the screen show them.</string>
+    <string name="settings_group_appearance">Appearance</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_group_about">About</string>
+    <string name="settings_privacy">Privacy Policy</string>
+    <string name="settings_support">Support</string>
+    <string name="settings_telegram">Contact on Telegram</string>
+    <string name="settings_licenses">Open-source licenses</string>
+    <string name="settings_licenses_title">Nunito font</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_version_value">%1$s (%2$d)</string>
+
+    <!-- Step colors -->
+    <string name="step_colors_type_prepare">Prepare</string>
+    <string name="step_colors_type_work_a">Work A</string>
+    <string name="step_colors_type_work_b">Work B</string>
+    <string name="step_colors_type_work_c">Work C</string>
+    <string name="step_colors_type_rest">Rest</string>
+    <string name="step_colors_type_cooldown">Cooldown</string>
+    <string name="step_colors_footer">The rest color can\'t be used for work, and work colors can\'t be used for rest.</string>
+    <string name="step_colors_preview">Preview</string>
+    <string name="step_colors_reset">Reset to Defaults</string>
+    <string name="step_colors_reset_title">Reset step colors?</string>
+    <string name="step_colors_reset_confirm">Reset</string>
+    <string name="step_colors_unavailable">%1$s, unavailable</string>
+    <string name="palette_red">Red</string>
+    <string name="palette_pink">Pink</string>
+    <string name="palette_purple">Purple</string>
+    <string name="palette_violet">Violet</string>
+    <string name="palette_indigo">Indigo</string>
+    <string name="palette_blue">Blue</string>
+    <string name="palette_ocean">Ocean</string>
+    <string name="palette_teal">Teal</string>
+    <string name="palette_green">Green</string>
+    <string name="palette_olive">Olive</string>
+    <string name="palette_amber">Amber</string>
+    <string name="palette_graphite">Graphite</string>
+    <string name="palette_custom">Custom</string>
+</resources>
