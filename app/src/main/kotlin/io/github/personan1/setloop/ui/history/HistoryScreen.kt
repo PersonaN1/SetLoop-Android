@@ -60,6 +60,7 @@ import io.github.personan1.setloop.ui.components.SetLoopCard
 import io.github.personan1.setloop.ui.components.StepRecordStrip
 import io.github.personan1.setloop.ui.components.TitledScreenScaffold
 import io.github.personan1.setloop.ui.navigation.AppNavigator
+import io.github.personan1.setloop.ui.navigation.HideBottomBarWhile
 import io.github.personan1.setloop.workout.WorkoutFormat
 import java.time.ZoneId
 import kotlinx.coroutines.launch
@@ -78,6 +79,7 @@ fun HistoryScreen(navigator: AppNavigator) {
     val allIds = remember(loadedDays) { loadedDays.orEmpty().flatMap { day -> day.records.map { it.id } } }
     // Records deleted elsewhere (or all of them here) leave selection mode as on iOS.
     LaunchedEffect(allIds) { if (loadedDays != null) selection = selection.retain(allIds) }
+    HideBottomBarWhile(selection.isSelecting)
     BackHandler(enabled = selection.isSelecting) { selection = selection.finish() }
 
     TitledScreenScaffold(
