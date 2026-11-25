@@ -1,0 +1,17 @@
+<resources>
+    <!-- Tips (SPEC D23). Text from the iOS catalog, adapted to Android gestures. -->
+    <string name="tip_close">Dismiss tip</string>
+    <string name="tip_list_intro_title">Start with an example</string>
+    <string name="tip_list_intro_text">\u25B6 starts right away. Tap a card to see its steps. Build your own with +.</string>
+    <string name="tip_card_actions_title">More actions</string>
+    <string name="tip_card_actions_text">Touch and hold a card to edit, duplicate or delete it.</string>
+    <string name="tip_start_title">Start the workout</string>
+    <string name="tip_start_text">Sounds and voice mark every step. The timer keeps running on the lock screen.</string>
+    <string name="tip_block_title">Blocks repeat</string>
+    <string name="tip_block_text">A block is a group of steps. Cycles set how many times it runs. Sets repeat the whole workout.</string>
+    <string name="tip_merge_title">Make a block from steps</string>
+    <string name="tip_merge_text">Select neighboring steps and merge them into a block with its own cycles.</string>
+    <string name="tip_history_title">Keep it in History</string>
+    <string name="tip_history_text">Save, and the workout appears in the History tab with its time, steps and note.</string>
+    <string name="settings_show_tips_again">Show Tips Again</string>
+</resources>

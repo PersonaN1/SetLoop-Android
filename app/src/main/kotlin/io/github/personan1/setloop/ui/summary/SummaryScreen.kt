@@ -44,6 +44,7 @@ import io.github.personan1.setloop.core.Limits
 import io.github.personan1.setloop.core.StepType
 import io.github.personan1.setloop.core.WorkoutStatus
 import io.github.personan1.setloop.core.WorkoutSummary
+import io.github.personan1.setloop.tips.Tip
 import io.github.personan1.setloop.ui.LocalAppContainer
 import io.github.personan1.setloop.ui.components.ConfirmDialog
 import io.github.personan1.setloop.ui.components.DurationText
@@ -54,6 +55,8 @@ import io.github.personan1.setloop.ui.components.accentColor
 import io.github.personan1.setloop.ui.components.durationMetric
 import io.github.personan1.setloop.ui.components.stepsMetric
 import io.github.personan1.setloop.ui.theme.TimerTextStyles
+import io.github.personan1.setloop.ui.tips.TipCard
+import io.github.personan1.setloop.ui.tips.rememberTips
 import io.github.personan1.setloop.workout.WorkoutResult
 import kotlinx.coroutines.launch
 
@@ -62,6 +65,7 @@ import kotlinx.coroutines.launch
 fun SummaryScreen(result: WorkoutResult, onDismiss: () -> Unit, modifier: Modifier = Modifier) {
     val history = LocalAppContainer.current.history
     val scope = rememberCoroutineScope()
+    val tips = rememberTips()
     val saveFlow = remember(result, history, onDismiss) {
         SummarySaveFlow(
             persist = { name, note ->
@@ -92,7 +96,12 @@ fun SummaryScreen(result: WorkoutResult, onDismiss: () -> Unit, modifier: Modifi
         onFieldsChange = { fields = it },
         isSaved = isSaved,
         historyFull = recordCount >= Limits.maxHistoryRecords,
-        onSave = { scope.launch { saveFlow.save(fields) } },
+        tip = tips.visible(Tip.History),
+        onCloseTip = tips::dismiss,
+        onSave = {
+            tips.dismiss(Tip.History)
+            scope.launch { saveFlow.save(fields) }
+        },
         onDiscard = { if (edited) confirmingDiscard = true else saveFlow.discard() },
         modifier = modifier,
     )
@@ -118,6 +127,8 @@ private fun SummaryContent(
     onFieldsChange: (SummaryFields) -> Unit,
     isSaved: Boolean,
     historyFull: Boolean,
+    tip: Tip?,
+    onCloseTip: (Tip) -> Unit,
     onSave: () -> Unit,
     onDiscard: () -> Unit,
     modifier: Modifier = Modifier,
@@ -137,6 +148,7 @@ private fun SummaryContent(
                     SummaryMetrics(summary)
                     StepRecordStrip(summary.steps)
                     SummaryFieldsForm(fields, onFieldsChange, enabled = !isSaved)
+                    if (tip != null) TipCard(tip, onClose = { onCloseTip(tip) })
                     if (historyFull) {
                         Text(
                             stringResource(R.string.summary_history_full, Limits.maxHistoryRecords),

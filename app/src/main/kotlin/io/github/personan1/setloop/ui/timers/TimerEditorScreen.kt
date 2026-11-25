@@ -49,10 +49,12 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -82,6 +84,7 @@ import io.github.personan1.setloop.core.Step
 import io.github.personan1.setloop.core.TimerDefinition
 import io.github.personan1.setloop.core.cappedName
 import io.github.personan1.setloop.core.totalDuration
+import io.github.personan1.setloop.tips.Tip
 import io.github.personan1.setloop.data.DefaultNames
 import io.github.personan1.setloop.ui.components.DurationText
 import io.github.personan1.setloop.ui.components.GroupedRow
@@ -100,6 +103,9 @@ import io.github.personan1.setloop.ui.components.reorderHandle
 import io.github.personan1.setloop.ui.components.reorderableItem
 import io.github.personan1.setloop.ui.components.spokenDuration
 import io.github.personan1.setloop.ui.navigation.AppNavigator
+import io.github.personan1.setloop.ui.tips.TipCard
+import io.github.personan1.setloop.ui.tips.TipPopup
+import io.github.personan1.setloop.ui.tips.rememberTips
 import java.util.UUID
 
 /** The default step names in the language of [context]. */
@@ -144,6 +150,12 @@ private fun EditorContent(
     var nameFocused by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val names = remember(context) { stepNames(context) }
+    val tips = rememberTips()
+    // Tips are out of the way in selection mode (DESIGN V12).
+    val blockTip = if (editor.selecting) null else tips.visible(Tip.Block)
+    val mergeTip = if (editor.selecting) null else tips.visible(Tip.Merge)
+    val currentTips by rememberUpdatedState(tips)
+    DisposableEffect(Unit) { onDispose { currentTips.editorLeft() } }
 
     // Like Cancel: leaves selection mode first, then asks before dropping changes.
     val cancel = {
@@ -180,7 +192,17 @@ private fun EditorContent(
         bottomBar = {
             // Over the keyboard the panel would cover half the screen.
             if (!nameFocused && !isKeyboardOpen) {
-                BottomPanel(editor, onSelect = viewModel::startSelecting, onCancelSelect = viewModel::stopSelecting, onMerge = viewModel::merge)
+                BottomPanel(
+                    editor = editor,
+                    mergeTip = mergeTip,
+                    onSelect = {
+                        tips.dismiss(Tip.Merge)
+                        viewModel.startSelecting()
+                    },
+                    onDismissMergeTip = { tips.dismiss(Tip.Merge) },
+                    onCancelSelect = viewModel::stopSelecting,
+                    onMerge = viewModel::merge,
+                )
             }
         },
     ) { padding ->
@@ -188,6 +210,8 @@ private fun EditorContent(
             editor = editor,
             viewModel = viewModel,
             padding = padding,
+            blockTip = blockTip,
+            onCloseTip = tips::dismiss,
             onNameFocus = { nameFocused = it },
         )
     }
@@ -240,6 +264,8 @@ private fun EditorList(
     editor: EditorState,
     viewModel: TimerEditorViewModel,
     padding: PaddingValues,
+    blockTip: Tip?,
+    onCloseTip: (Tip) -> Unit,
     onNameFocus: (Boolean) -> Unit,
 ) {
     val listState = rememberLazyListState()
@@ -268,6 +294,9 @@ private fun EditorList(
 
         sectionHeader("header-general", R.string.timers_section_general)
         editorRows(editor.generalRows(), editor, viewModel, reorder)
+        if (blockTip != null) {
+            item(key = "tip") { TipCard(blockTip, onClose = { onCloseTip(blockTip) }, modifier = Modifier.padding(top = 16.dp)) }
+        }
 
         definition.blocks.forEachIndexed { index, block ->
             item(key = "header-${block.id}") {
@@ -640,7 +669,14 @@ private fun FinishFooter(showNothingToRun: Boolean) {
 
 /** Pinned total, strip and step selection actions (DESIGN V11). On a short screen they share one row. */
 @Composable
-private fun BottomPanel(editor: EditorState, onSelect: () -> Unit, onCancelSelect: () -> Unit, onMerge: () -> Unit) {
+private fun BottomPanel(
+    editor: EditorState,
+    mergeTip: Tip?,
+    onSelect: () -> Unit,
+    onDismissMergeTip: () -> Unit,
+    onCancelSelect: () -> Unit,
+    onMerge: () -> Unit,
+) {
     val cleaned = editor.cleaned
     val total = cleaned.totalDuration.toInt()
     val heightDp = with(LocalDensity.current) { LocalWindowInfo.current.containerSize.height.toDp() }
@@ -662,7 +698,9 @@ private fun BottomPanel(editor: EditorState, onSelect: () -> Unit, onCancelSelec
                 Text(stringResource(R.string.timers_merge_into_block))
             }
         } else {
-            TextButton(onClick = onSelect) { Text(stringResource(R.string.timers_select_steps)) }
+            TipPopup(mergeTip, onDismissMergeTip) {
+                TextButton(onClick = onSelect) { Text(stringResource(R.string.timers_select_steps)) }
+            }
         }
     }
     Surface(color = MaterialTheme.colorScheme.surfaceContainer, tonalElevation = 3.dp) {
