@@ -49,9 +49,6 @@
     <string name="metric_rest">Rest</string>
     <string name="metric_other">Other</string>
 
-    <string name="workout_finish_title">Finish workout?</string>
-    <string name="workout_finish_message">The workout ends here. You can review it on the next screen.</string>
-
     <string name="background_restricted_title">Background use is restricted</string>
     <string name="background_restricted_message">Android may stop the workout when the screen turns off. In the app settings, open Battery and choose Unrestricted.</string>
     <string name="background_restricted_open_settings">App settings</string>

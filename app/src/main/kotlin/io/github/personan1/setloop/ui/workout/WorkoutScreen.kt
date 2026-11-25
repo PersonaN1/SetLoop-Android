@@ -3,6 +3,7 @@ package io.github.personan1.setloop.ui.workout
 import android.content.Context
 import android.provider.Settings
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -64,7 +65,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import io.github.personan1.setloop.R
-import io.github.personan1.setloop.ui.components.ConfirmDialog
 import io.github.personan1.setloop.ui.components.WithMaxFontScale
 import io.github.personan1.setloop.ui.components.spokenDuration
 import io.github.personan1.setloop.ui.theme.LocalAppSettings
@@ -107,8 +107,10 @@ fun WorkoutScreen(
     val keepScreenOn = LocalAppSettings.current.keepScreenOn
     KeepScreenOn(keepScreenOn)
 
-    var confirmingFinish by remember { mutableStateOf(false) }
-    BackHandler { confirmingFinish = true }
+    // Back leaves the workout running in the notification; Finish needs no confirmation because the
+    // summary still lets the user discard the result (SPEC D3).
+    val activity = LocalActivity.current
+    BackHandler { activity?.moveTaskToBack(true) }
 
     val stepColor = state.color.toColor()
     val background by animateColorAsState(
@@ -120,7 +122,7 @@ fun WorkoutScreen(
         onTogglePause = onTogglePause,
         onSkip = onSkip,
         onBack = onBack,
-        onFinish = { confirmingFinish = true },
+        onFinish = onFinish,
     )
 
     BoxWithConstraints(modifier = modifier.fillMaxSize().background(background)) {
@@ -147,20 +149,6 @@ fun WorkoutScreen(
                 }
             }
         }
-    }
-
-    if (confirmingFinish) {
-        ConfirmDialog(
-            title = stringResource(R.string.workout_finish_title),
-            text = stringResource(R.string.workout_finish_message),
-            confirmText = stringResource(R.string.action_finish),
-            onConfirm = {
-                confirmingFinish = false
-                onFinish()
-            },
-            onDismiss = { confirmingFinish = false },
-            destructive = false,
-        )
     }
 }
 
