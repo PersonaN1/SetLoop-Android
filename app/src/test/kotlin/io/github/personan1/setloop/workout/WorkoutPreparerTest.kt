@@ -77,6 +77,18 @@ class WorkoutPreparerTest {
     }
 
     @Test
+    fun `a stored definition keeps its names and reads settings`() = runTest {
+        settings.setVoicePrompts(true)
+        val definition = sampleDefinition()
+
+        val prepared = preparer.prepare("Evening", definition)
+
+        assertEquals("Evening", prepared.timerName)
+        assertEquals(definition, prepared.definition)
+        assertEquals(true, prepared.options.voicePrompts)
+    }
+
+    @Test
     fun `unknown timer gives null`() = runTest {
         assertNull(preparer.prepare("missing"))
     }

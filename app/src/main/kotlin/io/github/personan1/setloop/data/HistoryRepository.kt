@@ -48,6 +48,8 @@ class HistoryRepository(
 
     suspend fun get(id: String): WorkoutRecordEntity? = dao.get(id)
 
+    suspend fun count(): Int = dao.count()
+
     /**
      * Saves a finished workout. At the limit the oldest records are removed in the same transaction
      * (SPEC D10). A blank [name] falls back to [defaultName], the timer name.
@@ -72,6 +74,16 @@ class HistoryRepository(
         )
         dao.insert(record)
         record
+    }
+
+    /** The editable part of a record (iOS record detail). A blank [name] keeps the stored name and saves the note only. */
+    suspend fun updateText(id: String, name: String, note: String) {
+        val trimmed = name.trim()
+        if (trimmed.isEmpty()) {
+            dao.updateNote(id, note.trim())
+        } else {
+            dao.updateText(id, trimmed.cappedName, note.trim())
+        }
     }
 
     suspend fun deleteMany(ids: Collection<String>) = database.withTransaction {
