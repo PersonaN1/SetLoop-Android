@@ -71,6 +71,7 @@ import io.github.personan1.setloop.ui.components.rememberReorderState
 import io.github.personan1.setloop.ui.components.spokenDuration
 import io.github.personan1.setloop.ui.components.structureText
 import io.github.personan1.setloop.ui.navigation.AppNavigator
+import io.github.personan1.setloop.ui.navigation.HideBottomBarWhile
 import io.github.personan1.setloop.ui.workout.rememberWorkoutStarter
 import io.github.personan1.setloop.workout.WorkoutFormat
 
@@ -87,6 +88,7 @@ fun TimerListScreen(navigator: AppNavigator) {
     var pendingDelete by rememberSaveable { mutableStateOf<String?>(null) }
     var confirmingSelection by rememberSaveable { mutableStateOf(false) }
     val timers = state.timers
+    HideBottomBarWhile(selection.active)
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

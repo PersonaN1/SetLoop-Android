@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -29,27 +30,30 @@ fun SetLoopNavHost(modifier: Modifier = Modifier) {
     val navigator = remember(navController) { AppNavigator(navController) }
     val entry by navController.currentBackStackEntryAsState()
     val currentTab = TopLevelTab.entries.firstOrNull { it.isCurrent(entry?.destination) }
+    val bottomBarVisibility = remember { BottomBarVisibility() }
 
-    Scaffold(
-        modifier = modifier,
-        // Screens apply the insets themselves: each has its own top bar.
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        bottomBar = {
-            if (currentTab != null) SetLoopNavigationBar(currentTab, navigator::openTab)
-        },
-    ) { padding: PaddingValues ->
-        NavHost(
-            navController = navController,
-            startDestination = Route.TimerList,
-            modifier = Modifier.padding(padding).consumeWindowInsets(padding),
-        ) {
-            composable<Route.TimerList> { TimerListScreen(navigator) }
-            composable<Route.TimerPreview> { TimerPreviewScreen(it.toRoute<Route.TimerPreview>().timerId, navigator) }
-            composable<Route.TimerEditor> { TimerEditorScreen(it.toRoute<Route.TimerEditor>().timerId, navigator) }
-            composable<Route.History> { HistoryScreen(navigator) }
-            composable<Route.RecordDetail> { RecordDetailScreen(it.toRoute<Route.RecordDetail>().recordId, navigator) }
-            composable<Route.Settings> { SettingsScreen(navigator) }
-            composable<Route.StepColors> { StepColorsScreen(navigator) }
+    CompositionLocalProvider(LocalBottomBarVisibility provides bottomBarVisibility) {
+        Scaffold(
+            modifier = modifier,
+            // Screens apply the insets themselves: each has its own top bar.
+            contentWindowInsets = WindowInsets(0, 0, 0, 0),
+            bottomBar = {
+                if (currentTab != null && !bottomBarVisibility.hidden) SetLoopNavigationBar(currentTab, navigator::openTab)
+            },
+        ) { padding: PaddingValues ->
+            NavHost(
+                navController = navController,
+                startDestination = Route.TimerList,
+                modifier = Modifier.padding(padding).consumeWindowInsets(padding),
+            ) {
+                composable<Route.TimerList> { TimerListScreen(navigator) }
+                composable<Route.TimerPreview> { TimerPreviewScreen(it.toRoute<Route.TimerPreview>().timerId, navigator) }
+                composable<Route.TimerEditor> { TimerEditorScreen(it.toRoute<Route.TimerEditor>().timerId, navigator) }
+                composable<Route.History> { HistoryScreen(navigator) }
+                composable<Route.RecordDetail> { RecordDetailScreen(it.toRoute<Route.RecordDetail>().recordId, navigator) }
+                composable<Route.Settings> { SettingsScreen(navigator) }
+                composable<Route.StepColors> { StepColorsScreen(navigator) }
+            }
         }
     }
 }
