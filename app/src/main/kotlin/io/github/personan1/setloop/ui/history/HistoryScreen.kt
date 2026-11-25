@@ -5,6 +5,14 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.background
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Surface
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.rememberSwipeToDismissBoxState
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.customActions
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -113,6 +121,8 @@ fun HistoryScreen(navigator: AppNavigator) {
                 selection = selection,
                 onOpen = { id -> if (selection.isSelecting) selection = selection.toggle(id) else navigator.openRecord(id) },
                 onLongPress = { id -> selection = if (selection.isSelecting) selection.toggle(id) else selection.start(id) },
+                // A swipe deletes at once, without a confirmation (SPEC D10).
+                onDelete = { id -> scope.launch { history.deleteMany(listOf(id)) } },
                 padding = padding,
             )
         }
@@ -162,6 +172,7 @@ private fun HistoryList(
     selection: HistorySelection,
     onOpen: (String) -> Unit,
     onLongPress: (String) -> Unit,
+    onDelete: (String) -> Unit,
     padding: PaddingValues,
 ) {
     val locale = LocalConfiguration.current.locales[0]
@@ -187,18 +198,45 @@ private fun HistoryList(
                 SetLoopCard {
                     day.records.forEachIndexed { index, record ->
                         if (index > 0) HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
-                        HistoryRow(
-                            record = record,
-                            selecting = selection.isSelecting,
-                            selected = record.id in selection.selected,
-                            onClick = { onOpen(record.id) },
-                            onLongClick = { onLongPress(record.id) },
-                        )
+                        SwipeToDeleteRow(enabled = !selection.isSelecting, onDelete = { onDelete(record.id) }) {
+                            HistoryRow(
+                                record = record,
+                                selecting = selection.isSelecting,
+                                selected = record.id in selection.selected,
+                                onClick = { onOpen(record.id) },
+                                onLongClick = { onLongPress(record.id) },
+                            )
+                        }
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+private fun SwipeToDeleteRow(enabled: Boolean, onDelete: () -> Unit, content: @Composable () -> Unit) {
+    val delete = stringResource(R.string.detail_delete)
+    val state = rememberSwipeToDismissBoxState(
+        confirmValueChange = { target ->
+            (target == SwipeToDismissBoxValue.EndToStart).also { if (it) onDelete() }
+        },
+    )
+    SwipeToDismissBox(
+        state = state,
+        enableDismissFromStartToEnd = false,
+        gesturesEnabled = enabled,
+        modifier = Modifier.semantics { customActions = listOf(CustomAccessibilityAction(delete) { onDelete(); true }) },
+        backgroundContent = {
+            Box(
+                modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.error).padding(horizontal = 24.dp),
+                contentAlignment = Alignment.CenterEnd,
+            ) {
+                Icon(Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.onError)
+            }
+        },
+        content = { Surface(color = MaterialTheme.colorScheme.surfaceContainerLow, content = content) },
+    )
 }
 
 @Composable
