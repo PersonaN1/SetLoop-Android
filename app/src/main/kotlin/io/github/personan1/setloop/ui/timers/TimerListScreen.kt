@@ -59,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.personan1.setloop.R
 import io.github.personan1.setloop.core.Limits
+import io.github.personan1.setloop.tips.Tip
 import io.github.personan1.setloop.ui.components.ConfirmDialog
 import io.github.personan1.setloop.ui.components.GroupedRow
 import io.github.personan1.setloop.ui.components.PreviewStripView
@@ -72,6 +73,8 @@ import io.github.personan1.setloop.ui.components.spokenDuration
 import io.github.personan1.setloop.ui.components.structureText
 import io.github.personan1.setloop.ui.navigation.AppNavigator
 import io.github.personan1.setloop.ui.navigation.HideBottomBarWhile
+import io.github.personan1.setloop.ui.tips.TipCard
+import io.github.personan1.setloop.ui.tips.rememberTips
 import io.github.personan1.setloop.ui.workout.rememberWorkoutStarter
 import io.github.personan1.setloop.workout.WorkoutFormat
 
@@ -83,6 +86,7 @@ fun TimerListScreen(navigator: AppNavigator) {
     val viewModel = appViewModel { TimerListViewModel(it.timers) }
     val state by viewModel.state.collectAsStateWithLifecycle()
     val starter = rememberWorkoutStarter()
+    val tips = rememberTips()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val selection = state.selection
     var pendingDelete by rememberSaveable { mutableStateOf<String?>(null) }
@@ -129,10 +133,23 @@ fun TimerListScreen(navigator: AppNavigator) {
                 else -> TimerCards(
                     state = state,
                     viewModel = viewModel,
+                    // Tips are out of the way in selection mode (DESIGN V12).
+                    tip = if (selection.active) null else tips.visible(Tip.ListIntro, Tip.CardActions),
+                    onCloseTip = tips::dismiss,
                     onOpen = navigator::openTimer,
-                    onEdit = navigator::editTimer,
+                    onEdit = {
+                        tips.dismiss(Tip.CardActions)
+                        navigator.editTimer(it)
+                    },
+                    onDuplicate = {
+                        tips.dismiss(Tip.CardActions)
+                        viewModel.duplicate(it)
+                    },
                     onStart = starter::start,
-                    onRequestDelete = { pendingDelete = it },
+                    onRequestDelete = {
+                        tips.dismiss(Tip.CardActions)
+                        pendingDelete = it
+                    },
                 )
             }
         }
@@ -198,8 +215,11 @@ private fun EmptyState(onNew: () -> Unit) {
 private fun TimerCards(
     state: TimerListUiState,
     viewModel: TimerListViewModel,
+    tip: Tip?,
+    onCloseTip: (Tip) -> Unit,
     onOpen: (String) -> Unit,
     onEdit: (String) -> Unit,
+    onDuplicate: (String) -> Unit,
     onStart: (String) -> Unit,
     onRequestDelete: (String) -> Unit,
 ) {
@@ -215,6 +235,9 @@ private fun TimerCards(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
     ) {
+        if (tip != null) {
+            item(key = "tip") { TipCard(tip, onClose = { onCloseTip(tip) }, modifier = Modifier.padding(bottom = 16.dp)) }
+        }
         itemsIndexed(timers, key = { _, item -> item.id }) { index, item ->
             val last = index == timers.lastIndex
             TimerCard(
@@ -229,7 +252,7 @@ private fun TimerCards(
                 onToggle = { viewModel.toggleSelected(item.id) },
                 onStart = { onStart(item.id) },
                 onEdit = { onEdit(item.id) },
-                onDuplicate = { viewModel.duplicate(item.id) },
+                onDuplicate = { onDuplicate(item.id) },
                 onDelete = { onRequestDelete(item.id) },
                 onMoveUp = if (index > 0) ({ viewModel.moveBy(item.id, -1) }) else null,
                 onMoveDown = if (!last) ({ viewModel.moveBy(item.id, 1) }) else null,

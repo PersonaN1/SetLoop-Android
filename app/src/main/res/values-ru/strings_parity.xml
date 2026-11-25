@@ -1,0 +1,16 @@
+<resources>
+    <string name="tip_close">Закрыть подсказку</string>
+    <string name="tip_list_intro_title">Начните с примера</string>
+    <string name="tip_list_intro_text">\u25B6 запускает сразу. Нажмите на карточку, чтобы увидеть шаги. Свой таймер — кнопка +.</string>
+    <string name="tip_card_actions_title">Ещё действия</string>
+    <string name="tip_card_actions_text">Удерживайте карточку, чтобы изменить, скопировать или удалить её.</string>
+    <string name="tip_start_title">Начать тренировку</string>
+    <string name="tip_start_text">Звук и голос отмечают каждый шаг. На заблокированном экране таймер продолжает работать.</string>
+    <string name="tip_block_title">Блоки повторяются</string>
+    <string name="tip_block_text">Блок — группа шагов. «Циклы» задают, сколько раз он пройдёт. «Сеты» повторяют всю тренировку.</string>
+    <string name="tip_merge_title">Блок из шагов</string>
+    <string name="tip_merge_text">Выберите соседние шаги и объедините их в блок со своими циклами.</string>
+    <string name="tip_history_title">Сохраните в историю</string>
+    <string name="tip_history_text">Сохранённая тренировка появится во вкладке «История» — со временем, шагами и заметкой.</string>
+    <string name="settings_show_tips_again">Показать подсказки снова</string>
+</resources>
