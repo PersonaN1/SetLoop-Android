@@ -44,9 +44,6 @@
     <string name="metric_rest">Отдых</string>
     <string name="metric_other">Другое</string>
 
-    <string name="workout_finish_title">Завершить тренировку?</string>
-    <string name="workout_finish_message">Тренировка закончится здесь. Итоги появятся на следующем экране.</string>
-
     <string name="background_restricted_title">Фоновая работа ограничена</string>
     <string name="background_restricted_message">Android может остановить тренировку, когда экран погаснет. В настройках приложения откройте «Батарея» и выберите «Без ограничений».</string>
     <string name="background_restricted_open_settings">Настройки приложения</string>
