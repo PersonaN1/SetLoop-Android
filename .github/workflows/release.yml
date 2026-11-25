@@ -1,0 +1,100 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to release (e.g. v0.1.0)
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/tags/{0}', inputs.tag) || github.ref }}
+          fetch-depth: 0
+      - uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+      - name: Ensure Android platform 37.1
+        run: |
+          if [ ! -d "$ANDROID_HOME/platforms/android-37.1" ]; then
+            yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+            "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.1"
+          fi
+      - name: Check signing secrets
+        env:
+          KEYSTORE_BASE64: ${{ secrets.SETLOOP_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.SETLOOP_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.SETLOOP_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.SETLOOP_KEY_PASSWORD }}
+        run: |
+          missing=0
+          for name in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Missing repository secret SETLOOP_${name}"
+              missing=1
+            fi
+          done
+          exit "$missing"
+      - name: Decode keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.SETLOOP_KEYSTORE_BASE64 }}
+        run: |
+          umask 077
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/setloop-release.jks"
+          echo "SETLOOP_KEYSTORE_FILE=$RUNNER_TEMP/setloop-release.jks" >> "$GITHUB_ENV"
+      - name: Build release APK and AAB
+        env:
+          SETLOOP_KEYSTORE_PASSWORD: ${{ secrets.SETLOOP_KEYSTORE_PASSWORD }}
+          SETLOOP_KEY_ALIAS: ${{ secrets.SETLOOP_KEY_ALIAS }}
+          SETLOOP_KEY_PASSWORD: ${{ secrets.SETLOOP_KEY_PASSWORD }}
+        run: ./gradlew :app:assembleRelease :app:bundleRelease --stacktrace
+      - name: Collect and verify artifacts
+        run: |
+          set -euo pipefail
+          version="${TAG#v}"
+          apk=$(find app/build/outputs/apk/release -name '*.apk' | head -n 1)
+          aab=$(find app/build/outputs/bundle/release -name '*.aab' | head -n 1)
+          [ -n "$apk" ] && [ -n "$aab" ] || { echo "::error::Release APK or AAB not found"; exit 1; }
+          apksigner=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -n 1)
+          "$apksigner" verify --verbose --print-certs "$apk"
+          mkdir -p dist
+          cp "$apk" "dist/SetLoop-${version}.apk"
+          cp "$apk" dist/SetLoop.apk
+          cp "$aab" "dist/SetLoop-${version}.aab"
+          (cd dist && sha256sum -- * > SHA256SUMS.txt && cat SHA256SUMS.txt)
+      - name: Create GitHub Release
+        run: |
+          set -euo pipefail
+          version="${TAG#v}"
+          notes="$RUNNER_TEMP/notes.md"
+          # Annotated tag message if present, otherwise generated notes.
+          if [ "$(git cat-file -t "refs/tags/$TAG")" = "tag" ]; then
+            git tag -l --format='%(contents)' "$TAG" > "$notes"
+            notes_args=(--notes-file "$notes")
+          else
+            notes_args=(--generate-notes)
+          fi
+          gh release create "$TAG" --verify-tag --title "SetLoop $version" "${notes_args[@]}" \
+            "dist/SetLoop-${version}.apk" dist/SetLoop.apk "dist/SetLoop-${version}.aab" dist/SHA256SUMS.txt
+      - name: Delete keystore
+        if: always()
+        run: rm -f "$RUNNER_TEMP/setloop-release.jks"
