@@ -2,9 +2,13 @@ package io.github.personan1.setloop.data
 
 import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
+import io.github.personan1.setloop.shortcuts.ShortcutTimer
+import io.github.personan1.setloop.shortcuts.TimerShortcuts
 import io.github.personan1.setloop.tips.TipsStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 private val Context.settingsDataStore by preferencesDataStore(name = "settings")
@@ -24,5 +28,16 @@ class AppContainer(context: Context, scope: CoroutineScope) {
         PresetSeeder(appContext.settingsDataStore, timers)
             .seedIfNeeded(DefaultNames.presetNames(appContext), DefaultNames.newTimerName(appContext))
         timers.relocalize(DefaultNames.from(appContext))
+    }
+
+    private val shortcuts = TimerShortcuts(appContext)
+
+    /** Launcher shortcuts follow the timer list: its first timers, in list order. */
+    val shortcutSync: Job = scope.launch {
+        initialization.join()
+        timers.observeTimers()
+            .map { list -> list.map { ShortcutTimer(it.id, it.name) } }
+            .distinctUntilChanged()
+            .collect(shortcuts::publish)
     }
 }
