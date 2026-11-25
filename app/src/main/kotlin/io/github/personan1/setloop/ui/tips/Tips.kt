@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.personan1.setloop.tips.Tip
 import io.github.personan1.setloop.tips.TipsState
@@ -43,8 +42,9 @@ class Tips internal constructor(
 
 @Composable
 fun rememberTips(): Tips {
-    val store = LocalAppContainer.current.tips
-    val scope = rememberCoroutineScope()
+    val container = LocalAppContainer.current
+    val store = container.tips
     val state by remember(store) { store.state }.collectAsStateWithLifecycle(initialValue = null)
-    return Tips(state, store, scope)
+    // The app scope, not the composition's: editorLeft() is reported while the screen is being disposed.
+    return Tips(state, store, container.scope)
 }
