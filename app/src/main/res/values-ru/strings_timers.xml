@@ -1,0 +1,79 @@
+<resources>
+    <string name="timers_action_new">Новый таймер</string>
+    <string name="timers_action_select">Выбрать</string>
+    <string name="timers_action_edit">Изменить</string>
+    <string name="timers_action_duplicate">Дублировать</string>
+    <string name="timers_action_delete">Удалить</string>
+    <string name="timers_action_more">Ещё</string>
+    <string name="timers_action_ok">OK</string>
+
+    <string name="timers_empty_title">Нет таймеров</string>
+    <string name="timers_start_named">Запустить %1$s</string>
+    <string name="timers_delete_title">Удалить этот таймер?</string>
+    <string name="timers_delete_message">Тренировки в истории останутся.</string>
+    <plurals name="timers_delete_selected_title">
+        <item quantity="one">Удалить %1$d таймер?</item>
+        <item quantity="few">Удалить %1$d таймера?</item>
+        <item quantity="many">Удалить %1$d таймеров?</item>
+        <item quantity="other">Удалить %1$d таймеров?</item>
+    </plurals>
+    <string name="timers_limit_title">Достигнут предел таймеров</string>
+    <string name="timers_limit_message">Можно хранить до %1$d таймеров. Удалите старые, чтобы добавить новый.</string>
+
+    <string name="timers_reorder_handle">Переместить %1$s</string>
+    <string name="timers_move_up">Выше</string>
+    <string name="timers_move_down">Ниже</string>
+
+    <string name="timers_structure">Структура</string>
+    <string name="timers_sets">Сеты</string>
+    <string name="timers_block_number">Блок %1$d</string>
+    <string name="timers_times">\u00D7 %1$d</string>
+    <string name="timers_times_with_rest">\u00D7 %1$d \u00B7 отдых %2$s</string>
+    <string name="timers_total_description">Всего %1$s</string>
+
+    <string name="timers_name_label">Название</string>
+    <string name="timers_section_general">Общее</string>
+    <string name="timers_add_prepare">Добавить подготовку</string>
+    <string name="timers_add_rest_between_sets">Добавить отдых между сетами</string>
+    <string name="timers_add_cooldown">Добавить заминку</string>
+    <string name="timers_cycles">Циклы</string>
+    <string name="timers_add_step">Добавить шаг</string>
+    <string name="timers_add_block">Добавить блок</string>
+    <string name="timers_block_options">Настройки блока %1$d</string>
+    <string name="timers_duplicate_block">Дублировать блок</string>
+    <string name="timers_delete_block">Удалить блок</string>
+    <string name="timers_section_finish">Финиш</string>
+    <string name="timers_skip_last_rest">Пропускать последний отдых</string>
+    <string name="timers_skip_last_rest_footer">Убирает только отдых в самом конце тренировки. Отдых между блоками и сетами остаётся.</string>
+    <string name="timers_nothing_to_run">Нечего запускать: единственный шаг — последний отдых, а он пропускается.</string>
+    <string name="timers_limit_blocks">В таймере может быть до %1$d блоков.</string>
+    <string name="timers_limit_steps">В блоке может быть до %1$d шагов.</string>
+    <string name="timers_discard_title">Отменить изменения?</string>
+    <string name="timers_discard_confirm">Отменить изменения</string>
+    <string name="timers_increase">Увеличить: %1$s</string>
+    <string name="timers_decrease">Уменьшить: %1$s</string>
+    <string name="timers_total">Всего</string>
+    <string name="timers_select_steps">Выбрать шаги</string>
+    <string name="timers_merge_into_block">Объединить в блок</string>
+    <string name="timers_merge_error_title">Нельзя объединить эти шаги</string>
+    <string name="timers_merge_error_too_many_title">Слишком много блоков</string>
+    <string name="timers_merge_error_not_contiguous">Выберите соседние шаги одного блока.</string>
+    <string name="timers_merge_error_whole_block">Эти шаги уже составляют блок. Измените число его циклов.</string>
+    <string name="timers_merge_error_too_many">В таймере может быть до %1$d блоков.</string>
+    <string name="timers_edit_step_description">%1$s, %2$s</string>
+
+    <string name="timers_step_title">Шаг</string>
+    <string name="timers_step_type">Тип</string>
+    <string name="timers_step_duration">Длительность</string>
+    <string name="timers_step_delete_title">Удалить этот шаг?</string>
+    <string name="timers_type_prepare">Подготовка</string>
+    <string name="timers_type_work_a">Работа A</string>
+    <string name="timers_type_work_b">Работа B</string>
+    <string name="timers_type_work_c">Работа C</string>
+    <string name="timers_type_rest">Отдых</string>
+    <string name="timers_type_cooldown">Заминка</string>
+    <string name="timers_minutes_label">Минуты</string>
+    <string name="timers_seconds_label">Секунды</string>
+    <string name="timers_minutes_unit">мин</string>
+    <string name="timers_seconds_unit">сек</string>
+</resources>
