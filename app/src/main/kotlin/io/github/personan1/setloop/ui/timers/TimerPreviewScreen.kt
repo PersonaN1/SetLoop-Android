@@ -52,6 +52,7 @@ import io.github.personan1.setloop.core.StepType
 import io.github.personan1.setloop.core.TimerDefinition
 import io.github.personan1.setloop.core.duration
 import io.github.personan1.setloop.core.stepCount
+import io.github.personan1.setloop.tips.Tip
 import io.github.personan1.setloop.core.totalDuration
 import io.github.personan1.setloop.ui.components.ConfirmDialog
 import io.github.personan1.setloop.ui.components.MetricRow
@@ -65,6 +66,8 @@ import io.github.personan1.setloop.ui.components.structureText
 import io.github.personan1.setloop.ui.components.workRestOtherMetrics
 import io.github.personan1.setloop.ui.navigation.AppNavigator
 import io.github.personan1.setloop.ui.theme.TimerTextStyles
+import io.github.personan1.setloop.ui.tips.TipPopup
+import io.github.personan1.setloop.ui.tips.rememberTips
 import io.github.personan1.setloop.ui.workout.rememberWorkoutStarter
 import io.github.personan1.setloop.workout.WorkoutFormat
 
@@ -73,6 +76,9 @@ fun TimerPreviewScreen(timerId: String, navigator: AppNavigator) {
     val viewModel = appViewModel(key = timerId) { TimerPreviewViewModel(timerId, it.timers) }
     val state by viewModel.state.collectAsStateWithLifecycle()
     val starter = rememberWorkoutStarter()
+    val tips = rememberTips()
+    // Back on the list, the card actions tip may show.
+    LaunchedEffect(Unit) { tips.openedTimer() }
 
     when (val current = state) {
         TimerPreviewState.Loading -> Box(Modifier.fillMaxSize())
@@ -88,7 +94,12 @@ fun TimerPreviewScreen(timerId: String, navigator: AppNavigator) {
             onDuplicate = viewModel::duplicate,
             onDelete = viewModel::delete,
             onDismissLimit = viewModel::dismissLimit,
-            onStart = { starter.start(timerId) },
+            startTip = tips.visible(Tip.Start),
+            onDismissStartTip = { tips.dismiss(Tip.Start) },
+            onStart = {
+                tips.dismiss(Tip.Start)
+                starter.start(timerId)
+            },
         )
     }
 }
@@ -103,6 +114,8 @@ private fun PreviewContent(
     onDuplicate: () -> Unit,
     onDelete: () -> Unit,
     onDismissLimit: () -> Unit,
+    startTip: Tip?,
+    onDismissStartTip: () -> Unit,
     onStart: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -128,7 +141,7 @@ private fun PreviewContent(
                 scrollBehavior = scrollBehavior,
             )
         },
-        bottomBar = { StartBar(onStart) },
+        bottomBar = { StartBar(startTip, onDismissStartTip, onStart) },
     ) { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -190,23 +203,28 @@ private fun OverflowMenu(onEdit: () -> Unit, onDuplicate: () -> Unit, onDelete: 
 }
 
 @Composable
-private fun StartBar(onStart: () -> Unit) {
+private fun StartBar(tip: Tip?, onDismissTip: () -> Unit, onStart: () -> Unit) {
     Surface(color = MaterialTheme.colorScheme.surfaceContainer) {
-        Button(
-            onClick = onStart,
-            modifier = Modifier
-                .fillMaxWidth()
-                .navigationBarsPadding()
-                .padding(16.dp)
-                .heightIn(min = 52.dp),
-        ) {
-            Icon(Icons.Default.PlayArrow, contentDescription = null, modifier = Modifier.size(20.dp))
-            Text(
-                stringResource(R.string.action_start),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(start = 8.dp),
-            )
-        }
+        TipPopup(tip, onDismissTip) { StartButton(onStart) }
+    }
+}
+
+@Composable
+private fun StartButton(onStart: () -> Unit) {
+    Button(
+        onClick = onStart,
+        modifier = Modifier
+            .fillMaxWidth()
+            .navigationBarsPadding()
+            .padding(16.dp)
+            .heightIn(min = 52.dp),
+    ) {
+        Icon(Icons.Default.PlayArrow, contentDescription = null, modifier = Modifier.size(20.dp))
+        Text(
+            stringResource(R.string.action_start),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(start = 8.dp),
+        )
     }
 }
 

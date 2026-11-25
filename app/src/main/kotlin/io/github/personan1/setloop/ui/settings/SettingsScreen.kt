@@ -41,6 +41,8 @@ import io.github.personan1.setloop.data.AppTheme
 import io.github.personan1.setloop.ui.LocalAppContainer
 import io.github.personan1.setloop.ui.components.TitledScreenScaffold
 import io.github.personan1.setloop.ui.navigation.AppNavigator
+import io.github.personan1.setloop.ui.navigation.TopLevelTab
+import io.github.personan1.setloop.ui.tips.rememberTips
 import io.github.personan1.setloop.ui.theme.LocalAppSettings
 import io.github.personan1.setloop.workout.SoundPreviewPlayer
 import kotlinx.coroutines.Dispatchers
@@ -55,6 +57,7 @@ fun SettingsScreen(navigator: AppNavigator) {
     val scope = rememberCoroutineScope()
     val save: Launcher = { block -> scope.launch { block() } }
     val preview = remember { SoundPreviewPlayer(scope) }
+    val tips = rememberTips()
     DisposableEffect(preview) { onDispose(preview::release) }
 
     TitledScreenScaffold(title = stringResource(R.string.tab_settings), largeTitle = true) { padding ->
@@ -69,7 +72,10 @@ fun SettingsScreen(navigator: AppNavigator) {
                 WorkoutGroup(settings, store, save)
                 SoundGroup(settings, store, preview, save)
                 AppearanceGroup(settings, store, navigator, save)
-                AboutGroup()
+                AboutGroup(onShowTipsAgain = {
+                    tips.showAgain()
+                    navigator.openTab(TopLevelTab.Timers)
+                })
             }
         }
     }
@@ -159,7 +165,7 @@ private fun AppearanceGroup(settings: AppSettingsValues, store: AppSettings, nav
 }
 
 @Composable
-private fun AboutGroup() {
+private fun AboutGroup(onShowTipsAgain: () -> Unit) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val version = remember(context) { AppVersion.of(context) }
@@ -170,6 +176,8 @@ private fun AboutGroup() {
         LinkRow(stringResource(R.string.settings_support)) { uriHandler.openUri(SupportLinks.SUPPORT) }
         RowDivider()
         LinkRow(stringResource(R.string.settings_privacy)) { uriHandler.openUri(SupportLinks.PRIVACY) }
+        RowDivider()
+        ValueRow(stringResource(R.string.settings_show_tips_again), value = null, onClick = onShowTipsAgain)
         RowDivider()
         ValueRow(stringResource(R.string.settings_licenses), value = null, onClick = { showingLicenses = true })
         RowDivider()

@@ -2,6 +2,7 @@ package io.github.personan1.setloop.data
 
 import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
+import io.github.personan1.setloop.tips.TipsStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -16,6 +17,7 @@ class AppContainer(context: Context, scope: CoroutineScope) {
     val timers = TimerRepository(database)
     val history = HistoryRepository(database)
     val settings = AppSettings(appContext.settingsDataStore)
+    val tips = TipsStore(appContext.settingsDataStore)
 
     /** First-launch seeding and renaming of default names to the current language (as iOS does at launch). */
     val initialization: Job = scope.launch {
