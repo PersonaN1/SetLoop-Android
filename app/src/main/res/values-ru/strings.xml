@@ -8,4 +8,85 @@
     <string name="default_name_simple_interval">Простой интервал</string>
     <string name="default_name_your_example">Ваш пример</string>
     <string name="default_name_new_timer">Новый таймер</string>
+
+
+    <string name="workout_channel_name">Тренировка</string>
+    <string name="workout_channel_description">Обратный отсчёт идущей тренировки</string>
+    <string name="workout_cycle">Цикл %1$d/%2$d</string>
+    <string name="workout_set">Сет %1$d/%2$d</string>
+    <string name="workout_next">Далее: %1$s %2$s</string>
+    <string name="workout_paused">Пауза</string>
+
+    <string name="tab_timers">Таймеры</string>
+    <string name="tab_history">История</string>
+    <string name="tab_settings">Настройки</string>
+    <string name="title_preview">Предпросмотр</string>
+    <string name="title_edit_timer">Изменить таймер</string>
+    <string name="title_workout">Тренировка</string>
+    <string name="title_step_colors">Цвета шагов</string>
+    <string name="title_summary">Итоги</string>
+
+    <string name="action_pause">Пауза</string>
+    <string name="action_resume">Продолжить</string>
+    <string name="action_skip">Пропустить</string>
+    <string name="action_back">Назад</string>
+    <string name="action_finish">Финиш</string>
+    <string name="action_start">Старт</string>
+    <string name="action_cancel">Отмена</string>
+    <string name="action_done">Готово</string>
+    <string name="action_select_all">Выбрать все</string>
+    <string name="action_deselect_all">Снять выбор</string>
+    <string name="action_delete_count">Удалить (%1$d)</string>
+
+    <string name="repeat_count_compact">\u00D7%1$d</string>
+
+    <string name="metric_work">Работа</string>
+    <string name="metric_rest">Отдых</string>
+    <string name="metric_other">Другое</string>
+
+    <string name="workout_finish_title">Завершить тренировку?</string>
+    <string name="workout_finish_message">Тренировка закончится здесь. Итоги появятся на следующем экране.</string>
+
+    <string name="background_restricted_title">Фоновая работа ограничена</string>
+    <string name="background_restricted_message">Android может остановить тренировку, когда экран погаснет. В настройках приложения откройте «Батарея» и выберите «Без ограничений».</string>
+    <string name="background_restricted_open_settings">Настройки приложения</string>
+    <string name="background_restricted_start_anyway">Всё равно начать</string>
+
+    <string name="duration_separator">", "</string>
+    <plurals name="duration_hours">
+        <item quantity="one">%1$d час</item>
+        <item quantity="few">%1$d часа</item>
+        <item quantity="many">%1$d часов</item>
+        <item quantity="other">%1$d часа</item>
+    </plurals>
+    <plurals name="duration_minutes">
+        <item quantity="one">%1$d минута</item>
+        <item quantity="few">%1$d минуты</item>
+        <item quantity="many">%1$d минут</item>
+        <item quantity="other">%1$d минуты</item>
+    </plurals>
+    <plurals name="duration_seconds">
+        <item quantity="one">%1$d секунда</item>
+        <item quantity="few">%1$d секунды</item>
+        <item quantity="many">%1$d секунд</item>
+        <item quantity="other">%1$d секунды</item>
+    </plurals>
+    <plurals name="structure_blocks">
+        <item quantity="one">%1$d блок</item>
+        <item quantity="few">%1$d блока</item>
+        <item quantity="many">%1$d блоков</item>
+        <item quantity="other">%1$d блока</item>
+    </plurals>
+    <plurals name="structure_sets">
+        <item quantity="one">%1$d сет</item>
+        <item quantity="few">%1$d сета</item>
+        <item quantity="many">%1$d сетов</item>
+        <item quantity="other">%1$d сета</item>
+    </plurals>
+    <plurals name="structure_steps">
+        <item quantity="one">%1$d шаг</item>
+        <item quantity="few">%1$d шага</item>
+        <item quantity="many">%1$d шагов</item>
+        <item quantity="other">%1$d шага</item>
+    </plurals>
 </resources>

@@ -15,6 +15,16 @@ object WorkoutFormat {
 
     fun time(seconds: Int): String = time(seconds.seconds)
 
+    /** Length of a step or workout: 4:52, 1:05:30. */
+    fun duration(seconds: Int): String {
+        val total = seconds.coerceAtLeast(0)
+        return if (total >= 3600) {
+            "%d:%02d:%02d".format(total / 3600, total / 60 % 60, total % 60)
+        } else {
+            "%d:%02d".format(total / 60, total % 60)
+        }
+    }
+
     /** "Cycle 2/3 - Set 1/4"; parts that don't apply are omitted. */
     fun position(
         position: PlannedStep.Position,
