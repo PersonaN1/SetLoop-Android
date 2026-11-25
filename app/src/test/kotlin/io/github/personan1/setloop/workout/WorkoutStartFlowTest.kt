@@ -36,7 +36,10 @@ class WorkoutStartFlowTest {
         prepare = { id -> prepared.takeIf { id in known } },
         launch = { launched += it },
         requestNotificationPermission = { permissionRequests++ },
+        prepareFromRecord = { id -> repeated.takeIf { id == "r1" } },
     )
+
+    private val repeated = prepared.copy(timerName = "Repeated")
 
     @Test
     fun `decision order is permission, then warning, then start`() {
@@ -153,5 +156,29 @@ class WorkoutStartFlowTest {
         restored.onNotificationPermissionResult()
 
         assertEquals(1, launched.size)
+    }
+
+    @Test
+    fun `a record starts from its own definition and keeps the permission steps`() = runTest {
+        val flow = flow(FakeEnvironment(needsPermission = true, restricted = true))
+
+        flow.beginFromRecord("r1")
+        assertEquals(StartProgress("r1", StartProgress.Stage.AwaitingPermission, fromRecord = true), flow.progress.value)
+        flow.onNotificationPermissionResult()
+        assertEquals(StartProgress("r1", StartProgress.Stage.BackgroundWarning, fromRecord = true), flow.progress.value)
+        flow.confirmBackgroundWarning()
+
+        assertEquals(listOf(repeated), launched)
+        assertNull(flow.progress.value)
+    }
+
+    @Test
+    fun `a missing record starts nothing`() = runTest {
+        val flow = flow(FakeEnvironment())
+
+        flow.beginFromRecord("gone")
+
+        assertEquals(emptyList(), launched)
+        assertNull(flow.progress.value)
     }
 }

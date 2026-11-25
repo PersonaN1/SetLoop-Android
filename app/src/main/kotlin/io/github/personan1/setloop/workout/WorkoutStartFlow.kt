@@ -51,6 +51,10 @@ class WorkoutPreparer(
             options = settings.values.first().toWorkoutOptions(),
         )
     }
+
+    /** A workout from a stored definition, e.g. "Repeat" in history. The steps keep the names they had. */
+    suspend fun prepare(timerName: String, definition: TimerDefinition): PreparedWorkout =
+        PreparedWorkout(timerName, definition, settings.values.first().toWorkoutOptions())
 }
 
 /** What the start flow asks about the device. A fake in tests. */
@@ -87,7 +91,7 @@ class AndroidStartEnvironment(context: Context) : StartEnvironment {
 }
 
 /** Where an unfinished start waits for the user. Survives recreation of the activity. */
-data class StartProgress(val timerId: String, val stage: Stage) : Serializable {
+data class StartProgress(val timerId: String, val stage: Stage, val fromRecord: Boolean = false) : Serializable {
     enum class Stage { AwaitingPermission, BackgroundWarning }
 }
 
@@ -121,6 +125,8 @@ class WorkoutStartFlow(
     private val prepare: suspend (timerId: String) -> PreparedWorkout?,
     private val launch: (PreparedWorkout) -> Unit,
     private val requestNotificationPermission: () -> Unit,
+    /** Same as [prepare] for a history record id, see [beginFromRecord]. */
+    private val prepareFromRecord: suspend (recordId: String) -> PreparedWorkout? = { null },
     initial: StartProgress? = null,
 ) {
     private val mutableProgress = MutableStateFlow(initial)
@@ -128,26 +134,30 @@ class WorkoutStartFlow(
     /** Null while nothing waits for the user. */
     val progress: StateFlow<StartProgress?> = mutableProgress
 
-    suspend fun begin(timerId: String) = advance(timerId, permissionHandled = false, warningHandled = false)
+    suspend fun begin(timerId: String) = advance(timerId, false, permissionHandled = false, warningHandled = false)
+
+    /** Starts again the workout saved as a history record. Permission and warning steps are the same as in [begin]. */
+    suspend fun beginFromRecord(recordId: String) =
+        advance(recordId, true, permissionHandled = false, warningHandled = false)
 
     /** The result of the system dialog. A denial changes nothing: the workout runs, only its notification is hidden. */
     suspend fun onNotificationPermissionResult() {
         val waiting = mutableProgress.value ?: return
         if (waiting.stage != StartProgress.Stage.AwaitingPermission) return
-        advance(waiting.timerId, permissionHandled = true, warningHandled = false)
+        advance(waiting.timerId, waiting.fromRecord, permissionHandled = true, warningHandled = false)
     }
 
     suspend fun confirmBackgroundWarning() {
         val waiting = mutableProgress.value ?: return
         if (waiting.stage != StartProgress.Stage.BackgroundWarning) return
-        advance(waiting.timerId, permissionHandled = true, warningHandled = true)
+        advance(waiting.timerId, waiting.fromRecord, permissionHandled = true, warningHandled = true)
     }
 
     fun cancel() {
         mutableProgress.value = null
     }
 
-    private suspend fun advance(timerId: String, permissionHandled: Boolean, warningHandled: Boolean) {
+    private suspend fun advance(sourceId: String, fromRecord: Boolean, permissionHandled: Boolean, warningHandled: Boolean) {
         val decision = decideStart(
             needsPermission = environment.needsNotificationPermission(),
             backgroundRestricted = environment.isBackgroundRestricted(),
@@ -156,15 +166,15 @@ class WorkoutStartFlow(
         )
         when (decision) {
             StartDecision.RequestPermission -> {
-                mutableProgress.value = StartProgress(timerId, StartProgress.Stage.AwaitingPermission)
+                mutableProgress.value = StartProgress(sourceId, StartProgress.Stage.AwaitingPermission, fromRecord)
                 environment.markNotificationPermissionRequested()
                 requestNotificationPermission()
             }
             StartDecision.WarnBackgroundRestricted ->
-                mutableProgress.value = StartProgress(timerId, StartProgress.Stage.BackgroundWarning)
+                mutableProgress.value = StartProgress(sourceId, StartProgress.Stage.BackgroundWarning, fromRecord)
             StartDecision.Start -> {
                 mutableProgress.value = null
-                prepare(timerId)?.let(launch)
+                (if (fromRecord) prepareFromRecord(sourceId) else prepare(sourceId))?.let(launch)
             }
         }
     }

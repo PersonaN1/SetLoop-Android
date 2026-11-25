@@ -74,6 +74,12 @@ interface WorkoutRecordDao {
     )
     suspend fun deleteOldest(count: Int)
 
+    @Query("UPDATE workout_record SET name = :name, note = :note WHERE id = :id")
+    suspend fun updateText(id: String, name: String, note: String)
+
+    @Query("UPDATE workout_record SET note = :note WHERE id = :id")
+    suspend fun updateNote(id: String, note: String)
+
     @Query("DELETE FROM workout_record WHERE id IN (:ids)")
     suspend fun deleteByIds(ids: List<String>)
 }
