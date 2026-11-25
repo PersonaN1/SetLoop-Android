@@ -21,10 +21,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.semantics
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.personan1.setloop.R
 import io.github.personan1.setloop.data.AppContainer
 import io.github.personan1.setloop.shortcuts.ShortcutAction
+import io.github.personan1.setloop.shortcuts.TimerShortcuts
 import io.github.personan1.setloop.ui.navigation.SetLoopNavHost
 import io.github.personan1.setloop.ui.summary.SummaryScreen
 import io.github.personan1.setloop.ui.theme.ProvideAppSettings
@@ -99,7 +101,10 @@ private fun ShortcutRequests(shortcut: ShortcutAction?, onHandled: () -> Unit) {
                 Toast.makeText(context, R.string.shortcut_error_workout_running, Toast.LENGTH_SHORT).show()
             container.timers.get(request.timerId) == null ->
                 Toast.makeText(context, R.string.shortcut_error_timer_missing, Toast.LENGTH_SHORT).show()
-            else -> starter.start(request.timerId)
+            else -> {
+                ShortcutManagerCompat.reportShortcutUsed(context, TimerShortcuts.shortcutId(request.timerId))
+                starter.start(request.timerId)
+            }
         }
         onHandled()
     }
