@@ -45,6 +45,11 @@ class WorkoutStarter internal constructor(
         scope.launch { flow.begin(timerId) }
     }
 
+    /** Starts the workout saved in a history record again, from its stored definition snapshot. */
+    fun startFromRecord(recordId: String) {
+        scope.launch { flow.beginFromRecord(recordId) }
+    }
+
     internal fun onNotificationPermissionResult() {
         scope.launch { flow.onNotificationPermissionResult() }
     }
@@ -83,6 +88,11 @@ fun rememberWorkoutStarter(): WorkoutStarter {
             prepare = preparer::prepare,
             launch = { WorkoutService.start(appContext, it.definition, it.timerName, it.options) },
             requestNotificationPermission = { permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) },
+            prepareFromRecord = { recordId ->
+                container.history.get(recordId)?.let { record ->
+                    record.definition?.let { preparer.prepare(record.name, it) }
+                }
+            },
             initial = savedProgress,
         )
         WorkoutStarter(flow, scope).also { starter = it }

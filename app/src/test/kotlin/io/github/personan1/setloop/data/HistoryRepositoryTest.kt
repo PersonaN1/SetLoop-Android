@@ -121,6 +121,30 @@ class HistoryRepositoryTest {
     }
 
     @Test
+    fun `update text trims the name and note`() = runTest {
+        val repository = history()
+        val saved = repository.saveAt("2026-11-01T10:00:00Z", name = "old")
+
+        repository.updateText(saved.id, "  new name ", "  a note ")
+
+        val loaded = assertNotNull(repository.get(saved.id))
+        assertEquals("new name", loaded.name)
+        assertEquals("a note", loaded.note)
+    }
+
+    @Test
+    fun `update text with a blank name keeps the name and saves the note`() = runTest {
+        val repository = history()
+        val saved = repository.saveAt("2026-11-01T10:00:00Z", name = "keep")
+
+        repository.updateText(saved.id, "   ", "note")
+
+        val loaded = assertNotNull(repository.get(saved.id))
+        assertEquals("keep", loaded.name)
+        assertEquals("note", loaded.note)
+    }
+
+    @Test
     fun `days group records newest first`() = runTest {
         val repository = history()
         repository.saveAt("2026-11-24T08:00:00Z", name = "a")
