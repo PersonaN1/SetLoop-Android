@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 private val Context.settingsDataStore by preferencesDataStore(name = "settings")
 
 /** Manual DI: the database, repositories and settings, created once by the `Application`. */
-class AppContainer(context: Context, scope: CoroutineScope) {
+class AppContainer(context: Context, val scope: CoroutineScope) {
     private val appContext = context.applicationContext
 
     val database: SetLoopDatabase = SetLoopDatabase.create(appContext)
